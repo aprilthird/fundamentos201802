@@ -1,5 +1,8 @@
-#include "MainGame.h"
 #include <iostream>
+
+#include "MainGame.h"
+#include "Error.h"
+
 using namespace std;
 
 MainGame::MainGame() : 
@@ -7,10 +10,13 @@ MainGame::MainGame() :
 	width(800), 
 	height(600), 
 	state(GameState::PLAY) {
-
 }
 
 MainGame::~MainGame() {
+
+}
+
+void MainGame::init() {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	window = SDL_CreateWindow(
 		"Pantalla 1",
@@ -22,8 +28,9 @@ MainGame::~MainGame() {
 	);
 	if (window == nullptr) {
 		//mostrar mensaje de error
+		fatalError("Window could not be initialized");
 	}
-	
+
 	SDL_GLContext glContext = SDL_GL_CreateContext(window);
 	GLenum error = glewInit();
 	if (error != GLEW_OK) {
@@ -32,6 +39,13 @@ MainGame::~MainGame() {
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+}
+
+void MainGame::run() {
+	init();
+	sprite.init(-1, -1, 1, 1);
+	initShaders();
+	update();
 }
 
 void MainGame::update() {
@@ -44,10 +58,35 @@ void MainGame::update() {
 void MainGame::draw() {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	program.use();
+	GLuint timeLocation = program.getUniformLocation("time");
+	glUniform1f(timeLocation, time); // de tipo f por el tipo de dato float
+	time += 0.0002;
+	sprite.draw();
+	program.unuse();
 	SDL_GL_SwapWindow(window);
 }
 
-void MainGame::run() {
-	init();
-	update();
+void MainGame::processInput() {
+	SDL_Event event;
+	while (SDL_PollEvent(&event))
+	{
+		switch (event.type) {
+		case SDL_QUIT:
+			state = GameState::EXIT;
+			break;
+		case SDL_MOUSEMOTION:
+			cout << event.motion.x << ", " << event.motion.y << endl;
+			break;
+		}
+	}
+}
+
+void MainGame::initShaders() {
+	program.compileShaders("Shaders/colorShaderVertex.txt", "Shaders/colorShaderFragment.txt");
+	program.addAttribut("vertexPosition");
+	program.addAttribut("vertexPosition");
+	program.addAttribut("vertexPosition");
+
+	program.linkShader();
 }
