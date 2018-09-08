@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <SDL\SDL.h>
 #include <GL\glew.h>
 
@@ -17,7 +18,7 @@ private:
 	void init();
 	SDL_Window* window;
 	float time;
-	Sprite sprite;
+	vector<Sprite*> sprites;
 	GLS_Program program;
 	void processInput();
 

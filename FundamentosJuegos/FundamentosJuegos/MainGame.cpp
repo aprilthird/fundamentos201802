@@ -35,15 +35,20 @@ void MainGame::init() {
 	GLenum error = glewInit();
 	if (error != GLEW_OK) {
 		//mostrar mensaje de error de Glew
+		fatalError("Glew could not be initialized");
 	}
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void MainGame::run() {
 	init();
-	sprite.init(-1, -1, 1, 1);
+	time = 0;
+	sprites.push_back(new Sprite());
+	sprites.back()->init(-1, -1, 1, 1, "Images/Imagen1.png");
+	sprites.push_back(new Sprite());
+	sprites.back()->init(0, -1, 1, 1, "Images/Imagen1.png");
 	initShaders();
 	update();
 }
@@ -59,10 +64,15 @@ void MainGame::draw() {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	program.use();
+	glActiveTexture(GL_TEXTURE0);
 	GLuint timeLocation = program.getUniformLocation("time");
 	glUniform1f(timeLocation, time); // de tipo f por el tipo de dato float
 	time += 0.0002;
-	sprite.draw();
+	GLuint imageLocation = program.getUniformLocation("myImage");
+	glUniform1i(imageLocation, 0);
+	for (size_t i = 0; i < sprites.size(); ++i) {
+		sprites[i]->draw();
+	}
 	program.unuse();
 	SDL_GL_SwapWindow(window);
 }
@@ -85,8 +95,7 @@ void MainGame::processInput() {
 void MainGame::initShaders() {
 	program.compileShaders("Shaders/colorShaderVertex.txt", "Shaders/colorShaderFragment.txt");
 	program.addAttribut("vertexPosition");
-	program.addAttribut("vertexPosition");
-	program.addAttribut("vertexPosition");
-
+	program.addAttribut("vertexColor");
+	program.addAttribut("vertexUV");
 	program.linkShader();
 }
