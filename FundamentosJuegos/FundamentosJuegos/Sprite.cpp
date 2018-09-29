@@ -23,25 +23,40 @@ void Sprite::init(float _x, float _y, int _width, int _height, string texturePat
 	texture = ResourceManager::getTexture(texturePath);
 
 	Vertex vertexData[6];
-	vertexData[0].setPosition(x + width, y + height);
-	vertexData[1].setPosition(x + width, y);
-	vertexData[2].setPosition(x, y);
-	vertexData[3].setPosition(x, y);
-	vertexData[4].setPosition(x, y + height);
-	vertexData[5].setPosition(x + width, y + height);
+	//vertexData[0].setPosition(x + width, y + height);
+	//vertexData[1].setPosition(x + width, y);
+	//vertexData[2].setPosition(x, y);
+	//vertexData[3].setPosition(x, y);
+	//vertexData[4].setPosition(x, y + height);
+	//vertexData[5].setPosition(x + width, y + height);
 
-	vertexData[0].setUV(0.0f, 0.0f);
+	//vertexData[0].setUV(0.0f, 0.0f);
+	//vertexData[1].setUV(0.0f, 1.0f);
+	//vertexData[2].setUV(1.0f, 1.0f);
+	//vertexData[3].setUV(1.0f, 1.0f);
+	//vertexData[4].setUV(1.0f, 0.0f);
+	//vertexData[5].setUV(0.0f, 0.0f);
+
+	vertexData[0].setPosition(_x + _width, _y + _height);
+	vertexData[1].setPosition(_x, _y + _height);
+	vertexData[2].setPosition(_x, _y);
+	vertexData[3].setPosition(_x, _y);
+	vertexData[4].setPosition(_x + _width, _y);
+	vertexData[5].setPosition(_x + _width, _y + _height);
+
+	vertexData[0].setUV(1.0f, 1.0f);
 	vertexData[1].setUV(0.0f, 1.0f);
-	vertexData[2].setUV(1.0f, 1.0f);
-	vertexData[3].setUV(1.0f, 1.0f);
+	vertexData[2].setUV(0.0f, 0.0f);
+	vertexData[3].setUV(0.0f, 0.0f);
 	vertexData[4].setUV(1.0f, 0.0f);
-	vertexData[5].setUV(0.0f, 0.0f);
+	vertexData[5].setUV(1.0f, 1.0f);
 
-	//for (int i = 0; i < 6; ++i) {
-	//	vertexData[i].setColorRGBA(255, 0, 0, 255);
-	//}
-	//vertexData[1].setColorRGBA(0, 0, 255, 255);
-	//vertexData[4].setColorRGBA(0, 255, 0, 255);
+	for (int i = 0; i < 6; ++i) {
+		vertexData[i].setColorRGBA(255, 0, 0, 255);
+	}
+
+	vertexData[1].setColorRGBA(0, 0, 255, 255);
+	vertexData[4].setColorRGBA(0, 255, 0, 255);
 	//vertexData[5].setColorRGBA(255, 0, 255, 0);
 	//vertexData[1].setColorRGBA(255, 255, 0, 0);
 

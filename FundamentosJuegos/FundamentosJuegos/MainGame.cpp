@@ -6,10 +6,10 @@
 using namespace std;
 
 MainGame::MainGame() : 
-	window(nullptr), 
 	width(800), 
 	height(600), 
 	state(GameState::PLAY) {
+	camera2D.init(width, height);
 }
 
 MainGame::~MainGame() {
@@ -17,39 +17,16 @@ MainGame::~MainGame() {
 }
 
 void MainGame::init() {
-	SDL_Init(SDL_INIT_EVERYTHING);
-	window = SDL_CreateWindow(
-		"Pantalla 1",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		width,
-		height,
-		SDL_WINDOW_OPENGL
-	);
-	if (window == nullptr) {
-		//mostrar mensaje de error
-		fatalError("Window could not be initialized");
-	}
-
-	SDL_GLContext glContext = SDL_GL_CreateContext(window);
-	GLenum error = glewInit();
-	if (error != GLEW_OK) {
-		//mostrar mensaje de error de Glew
-		fatalError("Glew could not be initialized");
-	}
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+	window.create("Camera2d", width, height, 0);
+	initShaders();
 }
 
 void MainGame::run() {
 	init();
-	time = 0;
 	sprites.push_back(new Sprite());
 	sprites.back()->init(-1, -1, 1, 1, "Images/Imagen1.png");
 	sprites.push_back(new Sprite());
 	sprites.back()->init(0, -1, 1, 1, "Images/Imagen1.png");
-	initShaders();
 	update();
 }
 
@@ -65,20 +42,29 @@ void MainGame::draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	program.use();
 	glActiveTexture(GL_TEXTURE0);
+
+	GLuint pLocation = program.getUniformLocation("P");
+	glm::mat4 cameraMatrix = camera2D.getCameraMatrix();
+	
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
 	GLuint timeLocation = program.getUniformLocation("time");
 	glUniform1f(timeLocation, time); // de tipo f por el tipo de dato float
-	time += 0.0002;
 	GLuint imageLocation = program.getUniformLocation("myImage");
 	glUniform1i(imageLocation, 0);
+	time += 0.002;
 	for (size_t i = 0; i < sprites.size(); ++i) {
 		sprites[i]->draw();
 	}
 	program.unuse();
-	SDL_GL_SwapWindow(window);
+	window.swapWindow();
 }
 
 void MainGame::processInput() {
 	SDL_Event event;
+	const float CAMERA_SPEED = 20.0f;
+	const float CAMERA_SCALE = 0.1f;
+
 	while (SDL_PollEvent(&event))
 	{
 		switch (event.type) {
@@ -86,8 +72,41 @@ void MainGame::processInput() {
 			state = GameState::EXIT;
 			break;
 		case SDL_MOUSEMOTION:
-			cout << event.motion.x << ", " << event.motion.y << endl;
+			//cout << event.motion.x << ", " << event.motion.y << endl;
 			break;
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.sym) {
+			case SDLK_w:
+				camera2D.setPosition(
+					camera2D.getPosition() - glm::vec2(0.0, CAMERA_SPEED)
+				);
+				break;
+			case SDLK_s:
+				camera2D.setPosition(
+					camera2D.getPosition() + glm::vec2(0.0, CAMERA_SPEED)
+				); 
+				break;
+			case SDLK_a:
+				camera2D.setPosition(
+					camera2D.getPosition() - glm::vec2(CAMERA_SPEED, 0.0)
+				);
+				break;
+			case SDLK_d:
+				camera2D.setPosition(
+					camera2D.getPosition() + glm::vec2(CAMERA_SPEED, 0.0)
+				);
+				break;
+			case SDLK_q:
+				camera2D.setScale(
+					camera2D.getScale() + CAMERA_SCALE
+				);
+				break;
+			case SDLK_e:
+				camera2D.setScale(
+					camera2D.getScale() - CAMERA_SCALE
+				);
+				break;
+			}
 		}
 	}
 }

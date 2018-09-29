@@ -11,7 +11,7 @@ GLS_Program::~GLS_Program()
 {
 }
 
-GLS_Program::GLS_Program():programID(0), fragmentVertexID(0), fragmentShaderID(0)
+GLS_Program::GLS_Program() : programID(0), fragmentVertexID(0), fragmentShaderID(0)
 {
 
 }
@@ -110,5 +110,9 @@ void GLS_Program::use() {
 }
 
 void GLS_Program::unuse() {
-
+	glUseProgram(0);
+	for (int i = 0; i < numAttribute; i++) 
+	{
+		glDisableVertexAttribArray(i);
+	}
 }

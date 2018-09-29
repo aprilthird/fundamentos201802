@@ -1,10 +1,10 @@
 
 #include <SDL\SDL.h>
 #include "MainGame.h"
-#include "GLS_Program.h"
+#include "Engine.h"
 
 int main(int argc, char** argv) {
-	SDL_Init(SDL_INIT_EVERYTHING);
+	FD08::init();
 	MainGame maingame;
 	maingame.run();
 	system("pause");

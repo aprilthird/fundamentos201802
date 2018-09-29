@@ -5,6 +5,8 @@
 
 #include "Sprite.h"
 #include "GLS_Program.h"
+#include "Camera2D.h"
+#include "Window.h"
 
 enum class GameState
 {
@@ -16,10 +18,11 @@ private:
 	int width;
 	int height;
 	void init();
-	SDL_Window* window;
+	Window window;
 	float time;
 	vector<Sprite*> sprites;
 	GLS_Program program;
+	Camera2D camera2D;
 	void processInput();
 
 public:
