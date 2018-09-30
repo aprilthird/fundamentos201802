@@ -7,6 +7,8 @@
 #include "GLS_Program.h"
 #include "Camera2D.h"
 #include "Window.h"
+#include "SpriteBatch.h"
+#include "Level.h"
 
 enum class GameState
 {
@@ -21,9 +23,14 @@ private:
 	Window window;
 	float time;
 	vector<Sprite*> sprites;
+	vector<Level*> levels;
 	GLS_Program program;
 	Camera2D camera2D;
 	void processInput();
+	SpriteBatch spriteBatch;
+
+	int _currentLevel;
+	void initLevel();
 
 public:
 	MainGame();

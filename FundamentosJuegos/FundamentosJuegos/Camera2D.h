@@ -18,6 +18,7 @@ public:
 
 	void update();
 	void init(int _screenWidth, int _screenHeight);
+	glm::vec2 convertScreenToWorl(glm::vec2 screenScoords);
 
 	void setPosition(const glm::vec2& newPosition) {
 		position = newPosition;

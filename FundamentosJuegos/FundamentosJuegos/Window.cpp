@@ -22,19 +22,19 @@ int Window::create(string _windowName,
 	}
 
 	if (currentFlags & FULLSCREEN) {
-		flags |= SDL_WINDOW_FULLSCREEN;
+		flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
 	if (currentFlags & BORDERLESS) {
-		flags |= SDL_WINDOW_BORDERLESS;
+		flags |= SDL_WINDOW_BORDERLESS;	
 	}
 
 	window = SDL_CreateWindow(
 		_windowName.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		screenWidth,
-		screenHeight,
+		_screenWidth,
+		_screenHeight,
 		flags
 	);
 
@@ -47,7 +47,12 @@ int Window::create(string _windowName,
 	if (error != GLEW_OK) {
 		fatalError("Glew was not initialized");
 	}
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f); 
+	SDL_GL_SetSwapInterval(0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	return 0;
 }
 

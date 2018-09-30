@@ -50,9 +50,9 @@ public:
 
 class RenderBatch {
 public:
-	RenderBatch(GLuint _offset, GLuint _numVertixex, GLuint _texture);
+	RenderBatch(GLuint _offset, GLuint _numVertixes, GLuint _texture);
 	GLuint offset;
-	GLuint numVertixex;
+	GLuint numVertixes;
 	GLuint texture;
 };
 
@@ -64,11 +64,10 @@ class SpriteBatch
 private:
 	GLuint vbo;
 	GLuint vao;
-	std::vector<Glyph> glyphs;
-	std::vector<Glyph*> glyphsPointers;
+	std::vector<Glyph*> glyphs;
 	std::vector<RenderBatch> renderBatches;
 	void createVertexArray();
-	void setGlyph();
+	void sortGlyph();
 	GlyphSortType sortType;
 	void createRenderBatches();
 
@@ -79,11 +78,10 @@ public:
 	void init();
 	void begin(GlyphSortType sortType = GlyphSortType::TEXTURE);
 	void end();
-	void draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, ColorRGBA color);
+	void draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, const ColorRGBA& color);
 
 	void renderBatch();
 	static bool compareFrontToBack(Glyph* a, Glyph* b);
 	static bool compareBackToFront(Glyph* a, Glyph* b);
 	static bool compareTexture(Glyph* a, Glyph* b);
-	void sortGlyph();
 };

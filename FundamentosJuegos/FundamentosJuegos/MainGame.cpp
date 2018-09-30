@@ -2,12 +2,15 @@
 
 #include "MainGame.h"
 #include "Error.h"
+#include "ResourceManager.h"
+#include "Engine.h"
 
 using namespace std;
 
 MainGame::MainGame() : 
 	width(800), 
 	height(600), 
+	time(0),
 	state(GameState::PLAY) {
 	camera2D.init(width, height);
 }
@@ -17,23 +20,28 @@ MainGame::~MainGame() {
 }
 
 void MainGame::init() {
-	window.create("Camera2d", width, height, 0);
+	FD08::init();
+	window.create("Sprite Batch", width, height, 0);
 	initShaders();
+	spriteBatch.init();
+}
+
+void MainGame::initLevel() {
+	_currentLevel = 0;
+	levels.push_back(new Level("Levels/level1.txt"));
 }
 
 void MainGame::run() {
 	init();
-	sprites.push_back(new Sprite());
-	sprites.back()->init(-1, -1, 1, 1, "Images/Imagen1.png");
-	sprites.push_back(new Sprite());
-	sprites.back()->init(0, -1, 1, 1, "Images/Imagen1.png");
 	update();
 }
 
 void MainGame::update() {
 	while (state != GameState::EXIT) {
-		draw();
 		processInput();
+		draw();
+		camera2D.update();
+		time += 0.002f;
 	}
 }
 
@@ -48,14 +56,30 @@ void MainGame::draw() {
 	
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	GLuint timeLocation = program.getUniformLocation("time");
-	glUniform1f(timeLocation, time); // de tipo f por el tipo de dato float
+	/*GLuint timeLocation = program.getUniformLocation("time");
+	glUniform1f(timeLocation, time);*/ // de tipo f por el tipo de dato float
+
 	GLuint imageLocation = program.getUniformLocation("myImage");
 	glUniform1i(imageLocation, 0);
-	time += 0.002;
-	for (size_t i = 0; i < sprites.size(); ++i) {
-		sprites[i]->draw();
-	}
+
+	spriteBatch.begin();
+	glm::vec4 position(0.0f, 0.0f, 100.0f, 100.0f);
+	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+
+	static GLTexture texture = ResourceManager::getTexture("Textures/ejemplo.png");
+	ColorRGBA color;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 255;
+	spriteBatch.draw(position, uv, texture.id, 0.0f, color);
+	spriteBatch.draw(position + glm::vec4(50.0, 0.0, 0.0, 0.0), uv, texture.id, 0.0f, color);
+
+	spriteBatch.end();
+	spriteBatch.renderBatch();
+
+	//time += 0.002;
+
 	program.unuse();
 	window.swapWindow();
 }
