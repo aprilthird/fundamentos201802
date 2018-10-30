@@ -6,7 +6,8 @@ void Player::init(float speed, glm::vec2 position, InputManager* inputManager) {
 	_speed = speed;
 	_position = position;
 	_inputManager = inputManager;
-	color.set(0, 0, 185, 255);
+	//color.set(0, 0, 185, 255);
+	color.set(255, 255, 255, 255);
 }
 void Player::update() {
 	if (_inputManager->isKeyPressed(SDLK_w)) {
