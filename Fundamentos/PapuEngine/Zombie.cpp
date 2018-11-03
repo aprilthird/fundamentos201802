@@ -17,10 +17,6 @@ void Zombie::draw(SpriteBacth& spritebatch) {
 	spritebatch.draw(destRect, uvRect, textureID, 0.0f, color);
 }
 
-void Zombie::update() { 
-	_position.y += _speed;
-}
-
 void Zombie::update(glm::vec2 playerPosition) {
 	if (playerPosition.x > _position.x)
 		_position.x += _speed;
@@ -30,6 +26,10 @@ void Zombie::update(glm::vec2 playerPosition) {
 		_position.y += _speed;
 	else
 		_position.y -= _speed;
+}
+
+void Zombie::update(const std::vector<std::string>& levelData, std::vector<Human*>& humans, std::vector<Zombie*>& zombies) {
+	_position.y += _speed;
 }
 
 Zombie::~Zombie()

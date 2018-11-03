@@ -3,7 +3,8 @@
 #include <iostream>
 #include "ResourceManager.h"
 #include "PapuEngine.h"
-
+#include <ctime>
+#include <random>
 
 using namespace std;
 
@@ -18,6 +19,16 @@ void MainGame::init() {
 	glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 	initLevel();
 	initShaders();
+
+	std::mt19937 randomEngine(time(nullptr));
+	std::uniform_int_distribution<int> randomPosX(1, _levels[_currenLevel]->getWidth() - 2);
+	std::uniform_int_distribution<int> randomPosY(1, _levels[_currenLevel]->getHeight() - 2);
+
+	for (int i = 0; i < _levels[_currenLevel]->getNumHumans(); ++i) {
+		_humans.push_back(new Human());
+		glm::vec2 pos(randomPosX(randomEngine) * TILE_WIDTH, randomPosY(randomEngine) * TILE_WIDTH);
+		_humans.back()->init(1.0f, pos);
+	}
 }
 
 void MainGame::initLevel() {
@@ -70,6 +81,7 @@ void MainGame::draw() {
 
 	_spriteBacth.begin();
 	_levels[_currenLevel]->draw();
+	_player->draw(_spriteBacth);
 
 	for (int i = 0; i < _humans.size(); i++)
 	{
@@ -172,14 +184,18 @@ void MainGame::update() {
 }
 
 void MainGame::updateAgents() {
+	_player->update(_levels[_currenLevel]->getLevelData(),
+		_humans, _zombies);
+
 	for (int i = 0; i < _humans.size(); i++)
 	{
-		_humans[i]->update();
+		_humans[i]->update(
+			_levels[_currenLevel]->getLevelData(),
+			_humans, _zombies
+		);
+		_humans[i]->collideWithOther(_player);
 	}
-	for (int i = 0; i < _zombies.size(); i++)
-	{
-		_zombies[i]->update(_humans[0]->getPosition());
-	}
+	
 }
 
 MainGame::MainGame(): 
