@@ -10,7 +10,7 @@ void Bullet::draw(SpriteBacth& spriteBatch) {
 	color.b = 255;
 	color.a = 255;
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-	static GLTexture texture = ResourceManager::getTexture("Textures/Paper_Mario_.png");
+	static GLTexture texture = ResourceManager::getTexture("Textures/bullet.png");
 	glm::vec4 posAnSize = glm::vec4(_position.x, _position.y, 30, 30);
 	spriteBatch.draw(posAnSize, uv, texture.id, 0.0f, color);
 }

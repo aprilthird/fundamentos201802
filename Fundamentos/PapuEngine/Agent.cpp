@@ -52,9 +52,9 @@ void Agent::checkTilePosition(const std::vector<std::string>& levelData,
 	std::vector<glm::vec2>& collideTilePosition,
 	float x, float y) {
 
-	glm::vec2 cornesPos = glm::vec2(floor(x / (float)TILE_WIDTH));
+	glm::vec2 cornesPos = glm::vec2(floor(x / (float)TILE_WIDTH), floor(y / (float)TILE_WIDTH));
 	if (cornesPos.x < 0 || cornesPos.x >= levelData[0].size()
-		|| cornesPos.y < 0 || cornesPos.y >= levelData[0].size()) {
+		|| cornesPos.y < 0 || cornesPos.y >= levelData.size()) {
 		return;
 	}
 	if (levelData[cornesPos.y][cornesPos.x] != '.') {

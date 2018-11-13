@@ -15,5 +15,6 @@ public:
 		std::vector<Human*>& humans,
 		std::vector<Zombie*>& zombies
 	);
+	void draw(SpriteBacth& spriteBatch);
 };
 

@@ -1,4 +1,5 @@
 #include "Human.h"
+#include "ResourceManager.h"
 #include <random>
 #include <ctime>
 #include <glm\gtx\rotate_vector.hpp>
@@ -8,7 +9,7 @@ Human::Human()
 }
 
 void Human::init(float speed, glm::vec2 position) {
-	color.set(185, 0, 0, 255);
+	color.set(255, 255, 255, 255);
 	_speed = speed;
 	_position = position;
 
@@ -23,7 +24,7 @@ void Human::init(float speed, glm::vec2 position) {
 }
 
 void Human::update(const std::vector<std::string>& levelData,
-	std::vector<Human*>& humans,
+	std::vector<Human*>& humans,	
 	std::vector<Zombie*>& zombies) {
 
 	static std::mt19937 randomEngine(time(nullptr));
@@ -32,6 +33,16 @@ void Human::update(const std::vector<std::string>& levelData,
 	if (collideWithLevel(levelData)) {
 		_direction = glm::rotate(_direction, ranRotate(randomEngine));
 	}
+	for (int j = 0; j < humans.size(); j++) {
+		if (this != humans[j]) this->collideWithOther(humans[j]);
+	}
+}
+
+void Human::draw(SpriteBacth& spriteBatch) {
+	static int textureID = ResourceManager::getTexture("Textures/aldeano.png").id;
+	const glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
+	glm::vec4 destRect(_position.x, _position.y, AGENT_WIDTH, AGENT_WIDTH);
+	spriteBatch.draw(destRect, uvRect, textureID, 0.0f, color);
 }
 
 Human::~Human()
