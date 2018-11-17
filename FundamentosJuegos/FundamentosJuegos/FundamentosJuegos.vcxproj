@@ -158,6 +158,7 @@
     <ClInclude Include="GLS_Program.h" />
     <ClInclude Include="GLTexture.h" />
     <ClInclude Include="Human.h" />
+    <ClInclude Include="IGameScreen.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IOManager.h" />
